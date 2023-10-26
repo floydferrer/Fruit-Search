@@ -7,9 +7,14 @@ const fruit = ['Apple', 'Apricot', 'Avocado 🥑', 'Banana', 'Bilberry', 'Blackb
 //filters fruit array to elements that include str 
 const search = (str) => fruit.filter((val) => val.toLowerCase().includes(str.toLowerCase()));
 
-
 // Assigns search container value to variable 'text', and calls showSuggestions using search container value and length
-const searchHandler = () => showSuggestions(search(input.value), input.value.length);
+function searchHandler(){
+	if(input.value === ' ') {
+		return;
+	} else {
+		return showSuggestions(search(input.value), input.value.length);
+	}
+}
 
 // appends results parameter into suggestions ul and removes all suggestions if inputVal (search container input length)=== 0
 function showSuggestions(results, inputVal) {
@@ -21,8 +26,18 @@ function showSuggestions(results, inputVal) {
 	if(inputVal === 0) return;
 	for(let word of results) {
 		const newLI = document.createElement('li');
-		newLI.innerText = word;
+		const searchStr = input.value.toLowerCase();
+		const searchName = word.toLowerCase().replaceAll(searchStr, `<b>${searchStr}</b>`);
+		newLI.innerHTML = capitalizeWithBold(searchName);
 		suggestions.appendChild(newLI);
+	}
+}
+
+function capitalizeWithBold(boldWord){
+	if(boldWord[0] === '<'){
+		return `<b>${boldWord.charAt(3).toUpperCase()}${boldWord.slice(4)}`;
+	} else {
+		return `${boldWord.charAt(0).toUpperCase()}${boldWord.slice(1)}`; 
 	}
 }
 
@@ -30,7 +45,7 @@ function showSuggestions(results, inputVal) {
 function useSuggestion(e) {
 	const lowerCase = e.target.tagName.toLowerCase();
 	if(lowerCase === 'li') {
-		input.value = e.target.innerHTML;
+		input.value = e.target.innerHTML.replaceAll("<b>", "").replaceAll("</b>", "");
 		for (let i = 0; i < allLIs.length; i) {
 			allLIs[0].remove();
 		}
