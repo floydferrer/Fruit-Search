@@ -9,7 +9,12 @@ const search = (str) => fruit.filter((val) => val.toLowerCase().includes(str.toL
 
 // Assigns search container value to variable 'text', and calls showSuggestions using search container value and length
 function searchHandler(){
-	if(input.value === ' ') {
+	if(input.value.trim() === '') {
+		if(allLIs.length >= 1) {
+			for (let i = 0; i < allLIs.length; i) {
+				allLIs[0].remove();
+			}
+		}
 		return;
 	} else {
 		return showSuggestions(search(input.value), input.value.length);
@@ -18,6 +23,7 @@ function searchHandler(){
 
 // appends results parameter into suggestions ul and removes all suggestions if inputVal (search container input length)=== 0
 function showSuggestions(results, inputVal) {
+	console.log('it searches');
 	if(allLIs.length >= 1) {
 		for (let i = 0; i < allLIs.length; i) {
 			allLIs[0].remove();
@@ -29,6 +35,7 @@ function showSuggestions(results, inputVal) {
 		const searchStr = input.value.toLowerCase();
 		const searchName = word.toLowerCase().replaceAll(searchStr, `<b>${searchStr}</b>`);
 		newLI.innerHTML = capitalizeWithBold(searchName);
+		newLI.dataset.word = word;  // data-word="value"
 		suggestions.appendChild(newLI);
 	}
 }
@@ -45,7 +52,7 @@ function capitalizeWithBold(boldWord){
 function useSuggestion(e) {
 	const lowerCase = e.target.tagName.toLowerCase();
 	if(lowerCase === 'li') {
-		input.value = e.target.innerHTML.replaceAll("<b>", "").replaceAll("</b>", "");
+		input.value = e.target.dataset.word;
 		for (let i = 0; i < allLIs.length; i) {
 			allLIs[0].remove();
 		}
