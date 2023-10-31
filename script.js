@@ -4,26 +4,31 @@ const allLIs = document.getElementsByTagName('li');
 
 const fruit = ['Apple', 'Apricot', 'Avocado 🥑', 'Banana', 'Bilberry', 'Blackberry', 'Blackcurrant', 'Blueberry', 'Boysenberry', 'Currant', 'Cherry', 'Coconut', 'Cranberry', 'Cucumber', 'Custard apple', 'Damson', 'Date', 'Dragonfruit', 'Durian', 'Elderberry', 'Feijoa', 'Fig', 'Gooseberry', 'Grape', 'Raisin', 'Grapefruit', 'Guava', 'Honeyberry', 'Huckleberry', 'Jabuticaba', 'Jackfruit', 'Jambul', 'Juniper berry', 'Kiwifruit', 'Kumquat', 'Lemon', 'Lime', 'Loquat', 'Longan', 'Lychee', 'Mango', 'Mangosteen', 'Marionberry', 'Melon', 'Cantaloupe', 'Honeydew', 'Watermelon', 'Miracle fruit', 'Mulberry', 'Nectarine', 'Nance', 'Olive', 'Orange', 'Clementine', 'Mandarine', 'Tangerine', 'Papaya', 'Passionfruit', 'Peach', 'Pear', 'Persimmon', 'Plantain', 'Plum', 'Pineapple', 'Pomegranate', 'Pomelo', 'Quince', 'Raspberry', 'Salmonberry', 'Rambutan', 'Redcurrant', 'Salak', 'Satsuma', 'Soursop', 'Star fruit', 'Strawberry', 'Tamarillo', 'Tamarind', 'Yuzu'];
 
-//filters fruit array to elements that include str 
+//filters fruit array to only elements that include str 
 const search = (str) => fruit.filter((val) => val.toLowerCase().includes(str.toLowerCase()));
 
-// Assigns search container value to variable 'text', and calls showSuggestions using search container value and length
+// Prevents search results when space is added without characters. Removes search results when deleting input.value. Sends search input value and length to showSuggestions function
 function searchHandler(){
-	if(input.value === ' ') {
+	if(input.value.trim() === '') {
+		if(allLIs.length >= 1) {
+			for (let i = 0; i < allLIs.length; i) {
+				allLIs[0].remove();
+			}
+		}
 		return;
 	} else {
 		return showSuggestions(search(input.value), input.value.length);
 	}
 }
 
-// appends results parameter into suggestions ul and removes all suggestions if inputVal (search container input length)=== 0
-function showSuggestions(results, inputVal) {
+// Resets suggestions ul when input.value changes (except when input.value is completed removed), appends results parameter into suggestions ul. Prevents all search results from appending to suggestions ul if search input value is deleted. Assigns input.value to searchStr, converting to whole word to lowercase and bolding searchStr, assigning result to searchNAme. appending results after capitalizing first character to suggestions ul
+function showSuggestions(results, inputLength) {
 	if(allLIs.length >= 1) {
 		for (let i = 0; i < allLIs.length; i) {
 			allLIs[0].remove();
 		}
 	}
-	if(inputVal === 0) return;
+	if(inputLength === 0) return;
 	for(let word of results) {
 		const newLI = document.createElement('li');
 		const searchStr = input.value.toLowerCase();
@@ -33,6 +38,7 @@ function showSuggestions(results, inputVal) {
 	}
 }
 
+// Capitalizes first character whether it is bold or not
 function capitalizeWithBold(boldWord){
 	if(boldWord[0] === '<'){
 		return `<b>${boldWord.charAt(3).toUpperCase()}${boldWord.slice(4)}`;
@@ -41,7 +47,7 @@ function capitalizeWithBold(boldWord){
 	}
 }
 
-//populates search bar with suggestion
+// Populates search bar with suggestion
 function useSuggestion(e) {
 	const lowerCase = e.target.tagName.toLowerCase();
 	if(lowerCase === 'li') {
@@ -52,8 +58,8 @@ function useSuggestion(e) {
 	}
 }
 
-//Calls searchHandler after a new key is pressed
+// Calls searchHandler after a new key is pressed
 input.addEventListener('keyup', searchHandler);
 
-//when clicking on suggested search element, return clicked suggestion to search bar via useSuggestion function
+// when clicking on suggested search element, return clicked suggestion to search bar via useSuggestion function
 suggestions.addEventListener('click', useSuggestion);
