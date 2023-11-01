@@ -11,11 +11,8 @@ const search = (str) => fruit.filter((val) => val.toLowerCase().includes(str.toL
 function searchHandler(){
 	if(input.value.trim() === '') {
 		if(allLIs.length >= 1) {
-			for (let i = 0; i < allLIs.length; i) {
-				allLIs[0].remove();
-			}
+			suggestions.innerHTML = ''; 
 		}
-		return;
 	} else {
 		return showSuggestions(search(input.value), input.value.length);
 	}
@@ -23,10 +20,8 @@ function searchHandler(){
 
 // Resets suggestions ul when input.value changes (except when input.value is completed removed), appends results parameter into suggestions ul. Prevents all search results from appending to suggestions ul if search input value is deleted. Assigns input.value to searchStr, converting to whole word to lowercase and bolding searchStr, assigning result to searchNAme. appending results after capitalizing first character to suggestions ul
 function showSuggestions(results, inputLength) {
-	if(allLIs.length >= 1) {
-		for (let i = 0; i < allLIs.length; i) {
-			allLIs[0].remove();
-		}
+	if(allLIs.length >= 1) { //try a different logic
+		suggestions.innerHTML = ''; 
 	}
 	if(inputLength === 0) return;
 	for(let word of results) {
@@ -42,7 +37,7 @@ function showSuggestions(results, inputLength) {
 function capitalizeWithBold(boldWord){
 	if(boldWord[0] === '<'){
 		return `<b>${boldWord.charAt(3).toUpperCase()}${boldWord.slice(4)}`;
-	} else {
+	} else { // don't need else if there is a return in if statement
 		return `${boldWord.charAt(0).toUpperCase()}${boldWord.slice(1)}`; 
 	}
 }
@@ -52,9 +47,10 @@ function useSuggestion(e) {
 	const lowerCase = e.target.tagName.toLowerCase();
 	if(lowerCase === 'li') {
 		input.value = e.target.innerHTML.replaceAll("<b>", "").replaceAll("</b>", "");
-		for (let i = 0; i < allLIs.length; i) {
-			allLIs[0].remove();
-		}
+		suggestions.innerHTML = ''; 
+	} else if(lowerCase === 'b') {
+		input.value = e.target.parentElement.innerHTML.replaceAll("<b>", "").replaceAll("</b>", "");
+		suggestions.innerHTML = ''; 
 	}
 }
 
